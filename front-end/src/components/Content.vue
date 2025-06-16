@@ -120,21 +120,22 @@
                 v-loading="loading"
                 element-loading-text="数据正在处理中，请耐心等待"
                 element-loading-spinner="el-icon-loading"
-                lazy
               >
-                <el-table-column label="目标类别" width="250px">
+                <el-table-column label="类别" width="250px">
                   <template slot-scope="scope">
-                    <span>{{ scope.row[2] }}</span>
+                    <span>{{ scope.row.class }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="目标大小" width="250px">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row[0] }}</span>
-                  </template>
-                </el-table-column>
+
                 <el-table-column label="置信度" width="250px">
                   <template slot-scope="scope">
-                    <span>{{ scope.row[1] }}</span>
+                    <span>{{ scope.row.confidence.toFixed(3) }}</span>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="大小 (宽 x 高)" width="250px">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.size.width }} x {{ scope.row.size.height }}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -216,7 +217,7 @@ export default {
       this.srcList1 = [];
       this.wait_return = "";
       this.wait_upload = "";
-      this.feature_list = [];
+      this.feature_list = response.data.detections;
       this.feat_list = [];
       this.fullscreenLoading = true;
       this.loading = true;
@@ -245,13 +246,13 @@ export default {
 
           this.feat_list = Object.keys(response.data.image_info);
 
-          for (var i = 0; i < this.feat_list.length; i++) {
-            response.data.image_info[this.feat_list[i]][2] = this.feat_list[i];
-            this.feature_list.push(response.data.image_info[this.feat_list[i]]);
-          }
+          // for (var i = 0; i < this.feat_list.length; i++) {
+          //   response.data.image_info[this.feat_list[i]][2] = this.feat_list[i];
+          //   this.feature_list.push(response.data.image_info[this.feat_list[i]]);
+          // }
 
-          this.feature_list.push(response.data.image_info);
-          this.feature_list_1 = this.feature_list[0];
+          // this.feature_list.push(response.data.image_info);
+          // this.feature_list_1 = this.feature_list[0];
           this.dialogTableVisible = false;
           this.percentage = 0;
           this.notice1();

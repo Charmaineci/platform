@@ -106,27 +106,29 @@
                 </el-button>
               </div>
               <el-table
-                :data="detectionResults"
+                :data="feature_list"
                 height="390"
                 border
-                style="width: 100%"
+                style="width: 750px; text-align: center"
                 v-loading="loading"
                 element-loading-text="数据正在处理中，请耐心等待"
                 element-loading-spinner="el-icon-loading"
               >
-                <el-table-column label="目标类别" width="250px">
+                <el-table-column label="类别" width="250px">
                   <template slot-scope="scope">
-                    <span>{{ scope.row[2] }}</span>
+                    <span>{{ scope.row.class }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="目标大小" width="250px">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row[0] }}</span>
-                  </template>
-                </el-table-column>
+
                 <el-table-column label="置信度" width="250px">
                   <template slot-scope="scope">
-                    <span>{{ scope.row[1] }}</span>
+                    <span>{{ scope.row.confidence.toFixed(3) }}</span>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="大小 (宽 x 高)" width="250px">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.size.width }} x {{ scope.row.size.height }}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -148,6 +150,7 @@ export default {
       server_url: 'http://127.0.0.1:5003',
       originalImage: '',
       detectedImage: '',
+      feature_list: [],
       originalImageList: [],
       detectedImageList: [],
       detectionResults: [],
@@ -235,14 +238,8 @@ export default {
           this.detectedImage = `${this.server_url}/tmp/draw/${detectedImagePath}`
           this.detectedImageList = [this.detectedImage]
           
-          const imageInfo = response.data.image_info
-          const categories = Object.keys(imageInfo)
-          
-          this.detectionResults = categories.map(category => {
-            const info = imageInfo[category]
-            info[2] = category
-            return info
-          })
+          this.feature_list = response.data.defect_detection && response.data.defect_detection.detections || []
+
 
           this.loading = false
           this.dialogTableVisible = false
