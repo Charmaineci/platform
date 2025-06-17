@@ -1,3 +1,7 @@
+1.back-end 文件夹下新建 uploads文件夹 和 tmp文件夹，tmp下建ct文件夹和draw文件夹
+2.登录需要mysql数据库，用户名为root,密码123456
+3.后端用pycharm，前端用vscode，先运行后端python app.py再运行前端npm run serve
+4.环境需要安装 vue 和 node.js
 # 1. 效果：
 
 视频链接：
