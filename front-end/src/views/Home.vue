@@ -87,6 +87,7 @@
             <el-card>
               <div slot="header" class="clearfix">
                 <span>检测目标</span>
+                
                 <el-button
                   style="margin-left: 35px"
                   v-show="!showUploadButton"
@@ -94,8 +95,8 @@
                   icon="el-icon-upload"
                   class="upload-button"
                   @click="triggerUpload"
-                >
-                  重新选择图像
+                >重新选择图像
+                
                   <input
                     ref="upload2"
                     style="display: none"
@@ -104,7 +105,26 @@
                     @change="handleUpload"
                   />
                 </el-button>
+                <el-button
+                  v-show="!showUploadButton"
+                  type="success"
+                  @click="calculateStats"
+                >
+                  统计
+                </el-button>
               </div>
+              <el-table
+                v-if="stats.length > 0"
+                :data="stats"
+                class="mb-4"
+                border
+                stripe
+                style="margin-bottom: 20px"
+              >
+                <el-table-column label="缺陷种类" prop="class"></el-table-column>
+                <el-table-column label="缺陷总数" prop="count"></el-table-column>
+                <el-table-column label="平均置信度" prop="avg_confidence"></el-table-column>
+              </el-table>
               <el-table
                 :data="feature_list"
                 height="390"
@@ -114,6 +134,7 @@
                 element-loading-text="数据正在处理中，请耐心等待"
                 element-loading-spinner="el-icon-loading"
               >
+
                 <el-table-column label="类别" width="250px">
                   <template slot-scope="scope">
                     <span>{{ scope.row.class }}</span>
@@ -151,6 +172,7 @@ export default {
       originalImage: '',
       detectedImage: '',
       feature_list: [],
+      stats: [],
       originalImageList: [],
       detectedImageList: [],
       detectionResults: [],
@@ -260,7 +282,35 @@ export default {
           // 上传失败时不清除原始图片预览
           this.waitMessage = '检测失败，请重试'
         })
-    }
+    },
+    calculateStats() {
+      const grouped = {};
+
+      this.feature_list.forEach(item => {
+        const cls = item.class;
+        const conf = item.confidence;
+
+        if (!grouped[cls]) {
+          grouped[cls] = { count: 0, total_conf: 0 };
+        }
+
+        grouped[cls].count += 1;
+        grouped[cls].total_conf += conf;
+      });
+
+      // 构造统计结果表
+      this.stats = Object.entries(grouped).map(([cls, { count, total_conf }]) => ({
+        class: cls,
+        count,
+        avg_confidence: (total_conf / count).toFixed(2)
+      }));
+    },
+
+  reset() {
+    this.feature_list = [];
+    this.stats = [];
+    // 其他重置逻辑...
+  }
   }
 }
 </script>
