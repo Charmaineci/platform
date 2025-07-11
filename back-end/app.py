@@ -10,7 +10,8 @@ from utils.auth import generate_token, token_required
 import core.main
 # from defect_detection.detect import DefectDetector
 import cv2
-from processor.yolov8_detector import YOLOv8Detector
+# from processor.yolov8_detector import YOLOv8Detector
+from processor.yolov11_detector import YOLOv11Detector
 
 UPLOAD_FOLDER = r'./uploads'
 
@@ -28,7 +29,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
 # 初始化缺陷检测器
 # defect_detector = DefectDetector('defect_detection/defect_model/defect_detector/weights/best.pt')
 # defect_detector = Detector()
-defect_detector = YOLOv8Detector('dataset/runs/detect/neu_defect_yolov84/weights/best.pt')
+defect_detector = YOLOv11Detector('weights/best.pt')
 # 添加header解决跨域
 @app.after_request
 def after_request(response):
